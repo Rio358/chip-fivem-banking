@@ -10,14 +10,14 @@ AddEventHandler("banking:getBankAmount", function()
     local xPlayer = ESX.GetPlayerFromId(_source)
     local money = xPlayer.getAccount('bank').money
     local name = xPlayer.getName()
-    print("BANKSHIT")
+--    print("BANKSHIT")    Remove print to keep Console clean
     TriggerClientEvent("banking:money", source, money, name)
 end)  
 
 RegisterServerEvent("banking:deposit")
 AddEventHandler("banking:deposit", function(depositAmount, depositDate)
     local _depositAmount = tonumber(depositAmount)
-    print(_depositAmount)
+--    print(_depositAmount)  Remove print to keep Console clean
     local _source = source
     local xPlayer = ESX.GetPlayerFromId(_source)
     local _identifier = xPlayer.getIdentifier()
@@ -38,7 +38,6 @@ AddEventHandler("banking:deposit", function(depositAmount, depositDate)
         end)
     end
 end)
-
 
 RegisterServerEvent("banking:withdraw")
 AddEventHandler("banking:withdraw", function(withdrawAmount, withdrawDate)
@@ -101,7 +100,7 @@ AddEventHandler("banking:transfer", function(transferAmount, transferDate, trans
             end
         end
     end
-    print(transferAmount, transferDate, transferName)
+--    print(transferAmount, transferDate, transferName)   Remove print to keep Console clean
 end)
 
 ESX.RegisterServerCallback('banking:get:transactions', function(source, cb)
