@@ -31,26 +31,25 @@ Citizen.CreateThread(function()
             SetTextCentre(1)
             AddTextComponentString(text)
             DrawText(_x,_y)
-            local factor = (string.len(text)) / 370
-            DrawRect(_x,_y+0.0125, 0.015+ factor, 0.03, 41, 11, 41, 68)
         end
     end
     while true do 
         Citizen.Wait(0)
         local coords = GetEntityCoords(PlayerPedId())
         for k,v in ipairs(Config.Banks) do
-            if (GetDistanceBetweenCoords(coords, v.x, v.y, v.z, true) < 0.8) then --changed to 3.0    
+            if (GetDistanceBetweenCoords(coords, v.x, v.y, v.z, true) < 3.0) then --changed to 3.0    
                 DrawMarker(v.Type, v.x, v.y, v.z, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 192, 29, 204, 100, false, false, 2, true, false, false, false)
                 Draw3DText(v.x, v.y, v.z, "~g~[E]~s~ to open bank")
-                if IsControlJustReleased(0, 38) and GetDistanceBetweenCoords(coords, v.x, v.y, v.z, true) < 0.8 then --and ESX.PlayerData.job.name ~= "police"  
+                if IsControlJustReleased(0, 38) and GetDistanceBetweenCoords(coords, v.x, v.y, v.z, true) < 3.0 then --and ESX.PlayerData.job.name ~= "police"  
                     TriggerServerEvent("banking:getBankAmount")
                 end
-            end
+                else
+		Citizen.Wait(0)       --can produce blinking button, but also reduces resource MS by .07 bringing total down to 0.02
+		break
         end
     end
 end)
-
-
+--[[ remove blips spawned to keep map tidy
 Citizen.CreateThread(function()
     for k,v in pairs(Config.Banks) do
 		local blip = AddBlipForCoord(v.x, v.y, v.x)
@@ -65,11 +64,7 @@ Citizen.CreateThread(function()
 		EndTextCommandSetBlipName(blip)
 	end
 end)
-
-
-
-
-
+]]
 -- DEV COMMAND
 RegisterCommand("react:show", function()
     TriggerServerEvent("banking:getBankAmount")
@@ -109,9 +104,7 @@ AddEventHandler("banking:money", function(money, name)
     SetNuiFocus(true, true)
 
 end)
-
 -- DEPOSIT
-
 RegisterNUICallback("depositAmount", function(data)
     print("AMOUNT")
     local depositAmount = data.value
@@ -128,9 +121,7 @@ RegisterNUICallback("depositAmount", function(data)
     end)
     TriggerServerEvent("banking:getBankAmount")
 end)
-
 -- WITHDRAW
-
 RegisterNUICallback("withdrawAmount", function(data)
     local withdrawAmount = data.value
     local withdrawDate = data.date
@@ -146,9 +137,7 @@ RegisterNUICallback("withdrawAmount", function(data)
     end)
     TriggerServerEvent("banking:getBankAmount")
 end)
-
 -- TRANSFER
-
 RegisterNUICallback("transferAmount", function(data)
     local transferAmount = data.value 
     local transferName = data.name
@@ -156,11 +145,7 @@ RegisterNUICallback("transferAmount", function(data)
     print(transferAmount, transferDate, transferName)
     TriggerServerEvent("banking:transfer", transferAmount, transferDate, transferName)
 end)
-
-
 -- ALERT
-
-
 RegisterNetEvent("banking:send:alert")
 AddEventHandler("banking:send:alert", function(method, messageStr)
     print(method, messageStr)
@@ -172,8 +157,6 @@ AddEventHandler("banking:send:alert", function(method, messageStr)
         }
     })
 end)
-
-
 RegisterNUICallback("closeBank", function(data)
     SendNUIMessage(
         {
@@ -182,8 +165,6 @@ RegisterNUICallback("closeBank", function(data)
     )
     SetNuiFocus(false, false)
 end)
-
-
 --DEV COMMAND
 RegisterCommand("react:hide", function()
     SendNUIMessage(
